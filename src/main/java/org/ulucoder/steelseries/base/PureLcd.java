@@ -87,7 +87,7 @@ public class PureLcd extends JComponent {
 		
 		G2.drawImage(imBackground, 0, 0, null);
 		
-		if (value != null && value.length() > 1) {
+		if (value != null && value.length() > 0) {
 			G2.setColor(lcdColor.TEXT_COLOR);
 			G2.setFont(Util.INSTANCE.getDigitalFont().deriveFont(getHeight() * 0.9f));
 			
@@ -135,6 +135,7 @@ public class PureLcd extends JComponent {
 	public void setValue(String value) {
 		init = false;
 		this.value = value;
+		repaint();
 	}
 	
 	public ValueAlignment getValueAlignment() {
