@@ -505,7 +505,8 @@ public final class DisplaySingle extends JComponent implements Lcd, ActionListen
                 case DEC:
 
                 default:
-                    valueLayout = new TextLayout(formatLcdValue(lcdValue), G2.getFont(), RENDER_CONTEXT);
+                	String strLcdValue = formatLcdValue(lcdValue);
+                    valueLayout = new TextLayout(strLcdValue.startsWith("1") ? "8" + strLcdValue.substring(1) : strLcdValue, G2.getFont(), RENDER_CONTEXT);
                     VALUE_BOUNDARY.setFrame(valueLayout.getBounds());
                     if (lcdTextVisible) {
                     G2.drawString(formatLcdValue(lcdValue), (float)((lcdImage.getMinX() + (lcdImage.getWidth() - UNIT_STRING_WIDTH - VALUE_BOUNDARY.getWidth() - digitalFontOffset) - lcdImage.getHeight() * 0.3)), (lcdImage.getHeight() * 0.76f));

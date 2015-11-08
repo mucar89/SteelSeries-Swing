@@ -59,5 +59,15 @@ public enum SymbolType {
     ARROW_SOUTH,
     ARROW_SOUTH_WEST,
     ARROW_WEST,
-    ARROW_NORTH_WEST
+    ARROW_NORTH_WEST,
+    SQUARE,
+    PAUSE,
+    EAST,
+    CIRCLE,
+    USB,
+    PLUG,
+    LAMP,
+    PLUS,
+    MINUS;
+    
 }

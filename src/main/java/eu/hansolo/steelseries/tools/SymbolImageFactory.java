@@ -30,11 +30,19 @@ package eu.hansolo.steelseries.tools;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.RenderingHints;
-import java.awt.geom.GeneralPath;
-import java.awt.image.BufferedImage;
 import java.awt.Transparency;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage;
+
+import javax.swing.JFrame;
+
+import eu.hansolo.steelseries.extras.Indicator;
+
+import javax.swing.JFrame;
 
 
 /**
@@ -52,6 +60,25 @@ public enum SymbolImageFactory {
     private BufferedImage symbolImageBuffer = UTIL.createImage(1, 1, Transparency.TRANSLUCENT);
     private BufferedImage clipImageSymbol = UTIL.createImage(1, 1, Transparency.TRANSLUCENT);
 
+    private static final double SQUARE_SPACE = 0.31;
+    private static final double SQUARE_LENGTH = 1 - 2 * SQUARE_SPACE;
+    private static final double MINUS_THICKNESS = 0.07;
+    
+    public static void main(String[] args) {
+		JFrame frame = new JFrame();
+		frame.setSize(800, 600);
+		
+		frame.setLayout(new GridLayout(8, 6));
+		for (SymbolType st : SymbolType.values()) {
+			Indicator i  = new Indicator();
+			i.setSymbolType(st);
+			frame.add(i);
+		}
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+    
     /**
      * Creates the symbol image for an indicator gauge.
      * The image parameters and the image will be cached. If the
@@ -1290,7 +1317,285 @@ public enum SymbolImageFactory {
                 SYMBOL.lineTo(0.5093457943925234 * IMAGE_WIDTH, 0.6822429906542056 * IMAGE_HEIGHT);
                 SYMBOL.closePath();
                 break;
+                
+            case SQUARE:
+                SYMBOL = new GeneralPath();
+                SYMBOL.setWindingRule(Path2D.WIND_EVEN_ODD);
+                SYMBOL.moveTo(SQUARE_SPACE * IMAGE_WIDTH, SQUARE_SPACE * IMAGE_HEIGHT);
+                SYMBOL.lineTo(SQUARE_SPACE * IMAGE_WIDTH, (1 - SQUARE_SPACE) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((1 - SQUARE_SPACE) * IMAGE_WIDTH, (1 - SQUARE_SPACE) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((1 - SQUARE_SPACE) * IMAGE_WIDTH, SQUARE_SPACE * IMAGE_HEIGHT);
+                SYMBOL.closePath();
+                break;
+            
+            case EAST:
+                SYMBOL = new GeneralPath();
+                SYMBOL.setWindingRule(Path2D.WIND_EVEN_ODD);
+                SYMBOL.moveTo(0.4052336448598131 * IMAGE_WIDTH, 0.26635514018691586 * IMAGE_HEIGHT);
+                SYMBOL.lineTo(0.6715887850467289 * IMAGE_WIDTH, 0.4953271028037383 * IMAGE_HEIGHT);
+                SYMBOL.lineTo(0.4052336448598131 * IMAGE_WIDTH, 0.7336448598130841 * IMAGE_HEIGHT);
+                SYMBOL.lineTo(0.4052336448598131 * IMAGE_WIDTH, 0.26635514018691586 * IMAGE_HEIGHT);
+                SYMBOL.closePath();
+                break;
 
+            case PAUSE:
+                SYMBOL = new GeneralPath();
+                SYMBOL.setWindingRule(Path2D.WIND_EVEN_ODD);
+                SYMBOL.moveTo(SQUARE_SPACE * IMAGE_WIDTH, SQUARE_SPACE * IMAGE_HEIGHT);
+                SYMBOL.lineTo((SQUARE_SPACE + SQUARE_LENGTH / 3) * IMAGE_WIDTH, SQUARE_SPACE * IMAGE_HEIGHT);
+                SYMBOL.lineTo((SQUARE_SPACE + SQUARE_LENGTH / 3) * IMAGE_WIDTH, (1 - SQUARE_SPACE) * IMAGE_HEIGHT);
+                SYMBOL.lineTo(SQUARE_SPACE * IMAGE_WIDTH, (1 - SQUARE_SPACE) * IMAGE_HEIGHT);
+                SYMBOL.lineTo(SQUARE_SPACE * IMAGE_WIDTH, SQUARE_SPACE * IMAGE_HEIGHT);
+                SYMBOL.closePath();
+                
+                SYMBOL.moveTo((SQUARE_SPACE + (SQUARE_LENGTH / 3) * 2) * IMAGE_WIDTH, SQUARE_SPACE * IMAGE_HEIGHT);
+                SYMBOL.lineTo((SQUARE_SPACE + SQUARE_LENGTH) * IMAGE_WIDTH, SQUARE_SPACE * IMAGE_HEIGHT);
+                SYMBOL.lineTo((SQUARE_SPACE + SQUARE_LENGTH) * IMAGE_WIDTH, (1 - SQUARE_SPACE) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((SQUARE_SPACE + (SQUARE_LENGTH / 3) * 2) * IMAGE_WIDTH, (1 - SQUARE_SPACE) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((SQUARE_SPACE + (SQUARE_LENGTH / 3) * 2)* IMAGE_WIDTH, SQUARE_SPACE * IMAGE_HEIGHT);
+                SYMBOL.closePath();
+                break;
+                
+            case CIRCLE:
+            	double width = IMAGE_WIDTH / 2.5d;
+            	double height = IMAGE_HEIGHT / 2.5d;
+                SYMBOL = new GeneralPath(new Ellipse2D.Double((IMAGE_WIDTH - width) / 2, (IMAGE_HEIGHT - height) / 2, width, height));
+                SYMBOL.setWindingRule(Path2D.WIND_EVEN_ODD);
+                break;
+               
+            case USB:
+            	double USB_L = IMAGE_WIDTH / 15d;
+            	double USB_WIDTH = USB_L * 9d;
+            	double USB_LEFT_CIRCLE_R = USB_L * 1.67;
+            	double USB_LINE_WIDTH = USB_L * 0.33d;
+            	double USB_LEFT = (IMAGE_WIDTH - USB_WIDTH) / 2d;
+            	SYMBOL = new GeneralPath();
+            	SYMBOL.setWindingRule(Path2D.WIND_NON_ZERO);
+            	SYMBOL.moveTo(USB_LEFT + USB_LEFT_CIRCLE_R, (IMAGE_HEIGHT - USB_LINE_WIDTH) / 2);
+            	
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 2.33d - USB_LINE_WIDTH / 2, (IMAGE_HEIGHT - USB_LINE_WIDTH) / 2);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 3.75d, (IMAGE_HEIGHT - USB_LINE_WIDTH) / 2 - 1.5 * USB_L);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 5d, (IMAGE_HEIGHT - USB_LINE_WIDTH) / 2 - 1.5 * USB_L);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 5d, (IMAGE_HEIGHT + USB_LINE_WIDTH) / 2 - 1.5 * USB_L);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 3.75d, (IMAGE_HEIGHT + USB_LINE_WIDTH) / 2 - 1.5 * USB_L);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 2.33d + USB_LINE_WIDTH / 2, (IMAGE_HEIGHT - USB_LINE_WIDTH) / 2);
+            	
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 8, (IMAGE_HEIGHT - USB_LINE_WIDTH) / 2);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 8, (IMAGE_HEIGHT) / 2 - USB_L);
+            	SYMBOL.lineTo(USB_LEFT + USB_WIDTH, IMAGE_HEIGHT / 2);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 8, (IMAGE_HEIGHT) / 2 + USB_L);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 8, (IMAGE_HEIGHT + USB_LINE_WIDTH) / 2);
+            	
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 3.75d + USB_LINE_WIDTH / 2, (IMAGE_HEIGHT + USB_LINE_WIDTH) / 2);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 5.17d, (IMAGE_HEIGHT - USB_LINE_WIDTH) / 2 + 1.5 * USB_L);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 6.25d, (IMAGE_HEIGHT - USB_LINE_WIDTH) / 2 + 1.5 * USB_L);
+            	
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 6.25d, IMAGE_HEIGHT / 2 + 1 * USB_L);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 7.25d, IMAGE_HEIGHT / 2 + 1 * USB_L);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 7.25d, IMAGE_HEIGHT / 2 + 2 * USB_L);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 6.25d, IMAGE_HEIGHT / 2 + 2 * USB_L);
+            	
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 6.25d, (IMAGE_HEIGHT + USB_LINE_WIDTH) / 2 + 1.5 * USB_L);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 5.17d, (IMAGE_HEIGHT + USB_LINE_WIDTH) / 2 + 1.5 * USB_L);
+            	SYMBOL.lineTo(USB_LEFT + USB_L * 3.75d - USB_LINE_WIDTH / 2, (IMAGE_HEIGHT + USB_LINE_WIDTH) / 2);
+            	
+            	SYMBOL.lineTo(USB_LEFT + USB_LEFT_CIRCLE_R, (IMAGE_HEIGHT + USB_LINE_WIDTH) / 2);
+            	SYMBOL.closePath();
+            	
+            	SYMBOL.append(new Ellipse2D.Double(
+            			USB_LEFT, 
+            			(IMAGE_HEIGHT - USB_LEFT_CIRCLE_R) / 2, 
+            			USB_LEFT_CIRCLE_R, 
+            			USB_LEFT_CIRCLE_R), false);
+            	
+            	SYMBOL.append(new Ellipse2D.Double(
+            			USB_LEFT + 5 * USB_L, 
+            			IMAGE_WIDTH / 2 - 2 * USB_L, 
+            			USB_L, 
+            			USB_L), false);
+            	
+            	break;
+           
+            case PLUG:
+            	double topY = 0.25;
+            	double midUpY = 0.45;
+            	double midDownY = 0.50;
+            	double bottomY = 0.75;
+            	
+            	double topLeftX = 0.50;
+            	double topRightX = 0.6;
+            	double midUpLeftX = 0.55;
+            	double midUpRightX = 0.6;
+            	double midDownRightX = 0.5;
+            	double midDownLeftX = 0.45;
+            	double bottomX = 0.5;
+            	SYMBOL = new GeneralPath();
+            	SYMBOL.setWindingRule(Path2D.WIND_EVEN_ODD);
+            	SYMBOL.moveTo(topLeftX * IMAGE_WIDTH, topY * IMAGE_HEIGHT);
+            	SYMBOL.lineTo(topRightX * IMAGE_WIDTH, topY * IMAGE_HEIGHT);
+            	SYMBOL.lineTo(midUpLeftX * IMAGE_WIDTH, midUpY * IMAGE_HEIGHT);
+            	SYMBOL.lineTo(midUpRightX * IMAGE_WIDTH, midUpY * IMAGE_HEIGHT);
+            	SYMBOL.lineTo(bottomX * IMAGE_WIDTH, bottomY * IMAGE_HEIGHT);
+            	SYMBOL.lineTo(midDownRightX * IMAGE_WIDTH, midDownY * IMAGE_HEIGHT);
+            	SYMBOL.lineTo(midDownLeftX * IMAGE_WIDTH, midDownY * IMAGE_HEIGHT);
+            	SYMBOL.closePath();
+            	break;
+            	
+            case LAMP:
+                SYMBOL = new GeneralPath();
+                SYMBOL.setWindingRule(Path2D.WIND_EVEN_ODD);
+                SYMBOL.moveTo(IMAGE_HEIGHT * 0.4392523364485981, IMAGE_WIDTH * (1d - 0.26635514018691586));
+                SYMBOL.curveTo(IMAGE_HEIGHT * 0.4532710280373832, IMAGE_WIDTH * (1d - 0.26635514018691586), 
+                		IMAGE_HEIGHT * 0.4532710280373832, IMAGE_WIDTH * (1d - 0.2850467289719626), 
+                		IMAGE_HEIGHT * 0.4532710280373832, IMAGE_WIDTH * (1d - 0.2850467289719626));
+                SYMBOL.curveTo(IMAGE_HEIGHT * 0.4532710280373832, IMAGE_WIDTH * (1d - 0.2850467289719626),
+                		IMAGE_HEIGHT * 0.4532710280373832, IMAGE_WIDTH * (1d - 0.40654205607476634), 
+                		IMAGE_HEIGHT * 0.4532710280373832, IMAGE_WIDTH * (1d - 0.40654205607476634));
+                SYMBOL.curveTo(IMAGE_HEIGHT * 0.43457943925233644, IMAGE_WIDTH * (1d - 0.40654205607476634), 
+                		IMAGE_HEIGHT * 0.4252336448598131, IMAGE_WIDTH * (1d - 0.411214953271028), 
+                		IMAGE_HEIGHT * 0.4252336448598131, IMAGE_WIDTH * (1d - 0.411214953271028));
+                SYMBOL.lineTo(IMAGE_HEIGHT * 0.4252336448598131, IMAGE_WIDTH * (1d - 0.2850467289719626));
+                SYMBOL.curveTo(IMAGE_HEIGHT * 0.4252336448598131, IMAGE_WIDTH * (1d - 0.2850467289719626), 
+                		IMAGE_HEIGHT * 0.4252336448598131, IMAGE_WIDTH * (1d - 0.27102803738317754), 
+                		IMAGE_HEIGHT * 0.4392523364485981, IMAGE_WIDTH * (1d - 0.26635514018691586));
+                SYMBOL.closePath();
+                SYMBOL.moveTo(IMAGE_HEIGHT * 0.5560747663551402, IMAGE_WIDTH * (1d - 0.26635514018691586));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.5700934579439252, IMAGE_WIDTH * (1 - 0.27102803738317754),
+                		IMAGE_HEIGHT * 0.5700934579439252, IMAGE_WIDTH * (1 - 0.2850467289719626), 
+                		IMAGE_HEIGHT * 0.5700934579439252, IMAGE_WIDTH * (1 - 0.2850467289719626));
+                SYMBOL.lineTo(
+                		IMAGE_HEIGHT * 0.5700934579439252, IMAGE_WIDTH * (1 - 0.411214953271028));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.5700934579439252, IMAGE_WIDTH * (1 - 0.411214953271028),
+                		IMAGE_HEIGHT * 0.5607476635514018, IMAGE_WIDTH * (1 - 0.40654205607476634), 
+                		IMAGE_HEIGHT * 0.5420560747663551, IMAGE_WIDTH * (1 - 0.40654205607476634));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.5420560747663551, IMAGE_WIDTH * (1 - 0.40654205607476634), 
+                		IMAGE_HEIGHT * 0.5420560747663551, IMAGE_WIDTH * (1 - 0.2850467289719626), 
+                		IMAGE_HEIGHT * 0.5420560747663551, IMAGE_WIDTH * (1 - 0.2850467289719626));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.5420560747663551, IMAGE_WIDTH * (1 - 0.2850467289719626), 
+                		IMAGE_HEIGHT * 0.5420560747663551, IMAGE_WIDTH * (1 - 0.26635514018691586), 
+                		IMAGE_HEIGHT * 0.5560747663551402, IMAGE_WIDTH * (1 - 0.26635514018691586));
+                SYMBOL.closePath();
+                SYMBOL.moveTo(IMAGE_HEIGHT * 0.4953271028037383, IMAGE_WIDTH * (1 - 0.26635514018691586));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.514018691588785, IMAGE_WIDTH * (1 - 0.26635514018691586), 
+                		IMAGE_HEIGHT * 0.514018691588785, IMAGE_WIDTH * (1 - 0.2850467289719626), 
+                		IMAGE_HEIGHT * 0.514018691588785, IMAGE_WIDTH * (1 - 0.2850467289719626));
+                SYMBOL.lineTo(IMAGE_HEIGHT * 0.514018691588785, IMAGE_WIDTH * (1 - 0.40654205607476634));
+                SYMBOL.lineTo(IMAGE_HEIGHT * 0.48130841121495327, IMAGE_WIDTH * (1 - 0.40654205607476634));
+                SYMBOL.lineTo(IMAGE_HEIGHT * 0.48130841121495327, IMAGE_WIDTH * (1 - 0.2850467289719626));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.48130841121495327, IMAGE_WIDTH * (1 - 0.2850467289719626),
+                		IMAGE_HEIGHT * 0.48130841121495327, IMAGE_WIDTH * (1 - 0.27102803738317754), 
+                		IMAGE_HEIGHT * 0.4953271028037383, IMAGE_WIDTH * (1 - 0.26635514018691586));
+                SYMBOL.closePath();
+                SYMBOL.moveTo(IMAGE_HEIGHT * 0.3691588785046729, IMAGE_WIDTH * (1 - 0.27102803738317754));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.38317757009345793, IMAGE_WIDTH * (1 - 0.27102803738317754), 
+                		IMAGE_HEIGHT * 0.38317757009345793, IMAGE_WIDTH * (1 - 0.2850467289719626),
+                		IMAGE_HEIGHT * 0.38317757009345793, IMAGE_WIDTH * (1 - 0.2850467289719626));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.38317757009345793, IMAGE_WIDTH * (1 - 0.2850467289719626),
+                		IMAGE_HEIGHT * 0.38317757009345793, IMAGE_WIDTH * (1 - 0.42990654205607476),
+                		IMAGE_HEIGHT * 0.38317757009345793, IMAGE_WIDTH * (1 - 0.42990654205607476));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.3598130841121495, IMAGE_WIDTH * (1 - 0.4485981308411215), 
+                		IMAGE_HEIGHT * 0.35514018691588783, IMAGE_WIDTH * (1 - 0.4672897196261682), 
+                		IMAGE_HEIGHT * 0.35514018691588783, IMAGE_WIDTH * (1 - 0.4672897196261682));
+                SYMBOL.lineTo(IMAGE_HEIGHT * 0.35514018691588783, IMAGE_WIDTH * (1 - 0.2850467289719626));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.35514018691588783, IMAGE_WIDTH * (1 - 0.2850467289719626),
+                		IMAGE_HEIGHT * 0.35514018691588783, IMAGE_WIDTH * (1 - 0.27102803738317754),
+                		IMAGE_HEIGHT * 0.3691588785046729, IMAGE_WIDTH * (1 - 0.27102803738317754));
+                SYMBOL.closePath();
+                SYMBOL.moveTo(IMAGE_HEIGHT * 0.6261682242990654, IMAGE_WIDTH * (1 - 0.27102803738317754));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.6401869158878505, IMAGE_WIDTH * (1 - 0.27102803738317754),
+                		IMAGE_HEIGHT * 0.6401869158878505, IMAGE_WIDTH * (1 - 0.2850467289719626),
+                		IMAGE_HEIGHT * 0.6401869158878505, IMAGE_WIDTH * (1 - 0.2850467289719626));
+                SYMBOL.lineTo(IMAGE_HEIGHT * 0.6401869158878505, IMAGE_WIDTH * (1 - 0.4672897196261682));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.6401869158878505, IMAGE_WIDTH * (1 - 0.4672897196261682),
+                		IMAGE_HEIGHT * 0.6355140186915887, IMAGE_WIDTH * (1 - 0.4485981308411215),
+                		IMAGE_HEIGHT * 0.6121495327102804, IMAGE_WIDTH * (1 - 0.42990654205607476));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.6121495327102804, IMAGE_WIDTH * (1 - 0.42990654205607476),
+                		IMAGE_HEIGHT * 0.6121495327102804, IMAGE_WIDTH * (1 - 0.2850467289719626),
+                		IMAGE_HEIGHT * 0.6121495327102804, IMAGE_WIDTH * (1 - 0.2850467289719626));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.6121495327102804, IMAGE_WIDTH * (1 - 0.2850467289719626),
+                		IMAGE_HEIGHT * 0.6121495327102804, IMAGE_WIDTH * (1 - 0.27102803738317754),
+                		IMAGE_HEIGHT * 0.6261682242990654, IMAGE_WIDTH * (1 - 0.27102803738317754));
+                SYMBOL.closePath();
+                SYMBOL.moveTo(IMAGE_HEIGHT * 0.38317757009345793, IMAGE_WIDTH * (1 - 0.5467289719626168));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.38317757009345793, IMAGE_WIDTH * (1 - 0.5934579439252337),
+                		IMAGE_HEIGHT * 0.4252336448598131, IMAGE_WIDTH * (1 - 0.705607476635514),
+                		IMAGE_HEIGHT * 0.4953271028037383, IMAGE_WIDTH * (1 - 0.705607476635514));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.5747663551401869, IMAGE_WIDTH * (1 - 0.705607476635514), 
+                		IMAGE_HEIGHT * 0.6121495327102804, IMAGE_WIDTH * (1 - 0.5934579439252337), 
+                		IMAGE_HEIGHT * 0.6121495327102804, IMAGE_WIDTH * (1 - 0.5467289719626168));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.6121495327102804, IMAGE_WIDTH * (1 - 0.5327102803738317), 
+                		IMAGE_HEIGHT * 0.6121495327102804, IMAGE_WIDTH * (1 - 0.4766355140186916), 
+                		IMAGE_HEIGHT * 0.5, IMAGE_WIDTH * (1 - 0.4766355140186916));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.3878504672897196, IMAGE_WIDTH * (1 - 0.4766355140186916), 
+                		IMAGE_HEIGHT * 0.38317757009345793, IMAGE_WIDTH * (1 - 0.5327102803738317), 
+                		IMAGE_HEIGHT * 0.38317757009345793, IMAGE_WIDTH * (1 - 0.5467289719626168));
+                SYMBOL.closePath();
+                SYMBOL.moveTo(IMAGE_HEIGHT * 0.35514018691588783, IMAGE_WIDTH * (1 - 0.5373831775700935));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.35514018691588783, IMAGE_WIDTH * (1 - 0.5186915887850467), 
+                		IMAGE_HEIGHT * 0.3598130841121495, IMAGE_WIDTH * (1 - 0.4439252336448598), 
+                		IMAGE_HEIGHT * 0.5, IMAGE_WIDTH * (1 - 0.4439252336448598));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.6448598130841121, IMAGE_WIDTH * (1 - 0.4439252336448598),
+                		IMAGE_HEIGHT * 0.6401869158878505, IMAGE_WIDTH * (1 - 0.5186915887850467), 
+                		IMAGE_HEIGHT * 0.6401869158878505, IMAGE_WIDTH * (1 - 0.5373831775700935));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.6401869158878505, IMAGE_WIDTH * (1 - 0.5981308411214953), 
+                		IMAGE_HEIGHT * 0.5934579439252337, IMAGE_WIDTH * (1 - 0.7336448598130841), 
+                		IMAGE_HEIGHT * 0.4953271028037383, IMAGE_WIDTH * (1 - 0.7336448598130841));
+                SYMBOL.curveTo(
+                		IMAGE_HEIGHT * 0.40654205607476634, IMAGE_WIDTH * (1 - 0.7336448598130841), 
+                		IMAGE_HEIGHT * 0.35514018691588783, IMAGE_WIDTH * (1 - 0.5981308411214953), 
+                		IMAGE_HEIGHT * 0.35514018691588783, IMAGE_WIDTH * (1 - 0.5373831775700935));
+                SYMBOL.closePath();
+                break;
+
+            case MINUS:
+                SYMBOL = new GeneralPath();
+                SYMBOL.setWindingRule(Path2D.WIND_EVEN_ODD);
+                SYMBOL.moveTo(SQUARE_SPACE * IMAGE_WIDTH, (0.5 - MINUS_THICKNESS) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((1 - SQUARE_SPACE) * IMAGE_WIDTH, (0.5 - MINUS_THICKNESS) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((1 - SQUARE_SPACE) * IMAGE_WIDTH, (0.5 + MINUS_THICKNESS) * IMAGE_HEIGHT);
+                SYMBOL.lineTo(SQUARE_SPACE * IMAGE_WIDTH, (0.5 + MINUS_THICKNESS) * IMAGE_HEIGHT);
+                SYMBOL.closePath();
+                break;
+
+            case PLUS:
+                SYMBOL = new GeneralPath();
+                SYMBOL.setWindingRule(Path2D.WIND_EVEN_ODD);
+                SYMBOL.moveTo(SQUARE_SPACE * IMAGE_WIDTH, (0.5 - MINUS_THICKNESS) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((0.5 - MINUS_THICKNESS) * IMAGE_WIDTH, (0.5 - MINUS_THICKNESS) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((0.5 - MINUS_THICKNESS) * IMAGE_WIDTH, SQUARE_SPACE * IMAGE_HEIGHT);
+                SYMBOL.lineTo((0.5 + MINUS_THICKNESS) * IMAGE_WIDTH, SQUARE_SPACE * IMAGE_HEIGHT);
+                SYMBOL.lineTo((0.5 + MINUS_THICKNESS) * IMAGE_WIDTH, (0.5 - MINUS_THICKNESS) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((1 - SQUARE_SPACE) * IMAGE_WIDTH, (0.5 - MINUS_THICKNESS) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((1 - SQUARE_SPACE) * IMAGE_WIDTH, (0.5 + MINUS_THICKNESS) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((0.5 + MINUS_THICKNESS) * IMAGE_WIDTH, (0.5 + MINUS_THICKNESS) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((0.5 + MINUS_THICKNESS) * IMAGE_WIDTH, (1 - SQUARE_SPACE) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((0.5 - MINUS_THICKNESS) * IMAGE_WIDTH, (1 - SQUARE_SPACE) * IMAGE_HEIGHT);
+                SYMBOL.lineTo((0.5 - MINUS_THICKNESS) * IMAGE_WIDTH, (0.5 + MINUS_THICKNESS) * IMAGE_HEIGHT);
+                SYMBOL.lineTo(SQUARE_SPACE * IMAGE_WIDTH, (0.5 + MINUS_THICKNESS) * IMAGE_HEIGHT);
+                SYMBOL.closePath();
+                break;
+                
             case HORN:
 
             default:

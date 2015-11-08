@@ -383,7 +383,7 @@ public enum BackgroundImageFactory {
         }
 
         // Take image from cache instead of creating a new one if parameters are the same as last time
-        if (linWidth == WIDTH && linHeight == HEIGHT && linBackgroundColor == BACKGROUND_COLOR && linCustomBackground.equals(CUSTOM_BACKGROUND) && linTextureColor.equals(TEXTURE_COLOR)) {
+        if (linWidth == WIDTH && linHeight == HEIGHT && linBackgroundColor == BACKGROUND_COLOR && (linCustomBackground != null && linCustomBackground.equals(CUSTOM_BACKGROUND)) && (linTextureColor != null && linTextureColor.equals(TEXTURE_COLOR))) {
             if (BACKGROUND_IMAGE != null) {
                 final Graphics2D G2 = BACKGROUND_IMAGE.createGraphics();
                 G2.drawImage(linBackgroundImage, 0, 0, null);
