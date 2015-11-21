@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.RenderingHints;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
@@ -17,13 +19,15 @@ import eu.hansolo.steelseries.tools.FrameEffect;
 import eu.hansolo.steelseries.tools.FrameImageFactory;
 
 public class BaseFrame extends JComponent {
-
+	
+	public static final int FRAME_WIDTH = 18;
+	
 	private static final long serialVersionUID = -389611091884603191L;
 
 	private FrameDesign frameDesign = FrameDesign.METAL;
 	private Paint customFrameDesign = Color.BLACK;
 	private FrameEffect frameEffect = FrameEffect.EFFECT_CONE;
-	private BackgroundColor backgroundColor = BackgroundColor.LINEN;
+	private BackgroundColor backgroundColor = BackgroundColor.BRUSHED_METAL;
 	
 	private BufferedImage frameImage;
 	private BufferedImage backgroundImage;
@@ -50,6 +54,16 @@ public class BaseFrame extends JComponent {
 		foregroundImage = ForegroundImageFactory.INSTANCE.createLinearForeground(getWidth(), getHeight());
 		
 		initialized = true;
+	}
+	
+	public BaseFrame() {
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				initialized = false;
+				repaint();
+			}
+		});
 	}
 	
 	@Override

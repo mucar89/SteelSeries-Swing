@@ -1,10 +1,13 @@
 package org.ulucoder.steelseries.base;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.RenderingHints;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;
@@ -16,7 +19,7 @@ import eu.hansolo.steelseries.tools.LcdColor;
 import eu.hansolo.steelseries.tools.LcdImageFactory;
 import eu.hansolo.steelseries.tools.Util;
 
-public class PureLcd extends JComponent {
+public class BaseLcd extends JComponent {
 	
 	private static final long serialVersionUID = -8734694411359992129L;
 	
@@ -27,7 +30,7 @@ public class PureLcd extends JComponent {
 	private String value;
 	private ValueAlignment valueAlignment = ValueAlignment.CENTER;
 	
-	private final FontRenderContext RENDER_CONTEXT = new FontRenderContext(null, true, true);
+	private static final FontRenderContext RENDER_CONTEXT = new FontRenderContext(null, true, true);
 	
 	private boolean init = false;
 	private BufferedImage imBackground;
@@ -64,6 +67,17 @@ public class PureLcd extends JComponent {
 		}
 		
 		init = true;
+	}
+	
+	public BaseLcd() {
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				System.out.println("x:" + getWidth());
+				init = false;
+				repaint();
+			}
+		});
 	}
 	
 	protected int getDigitsWidth() {

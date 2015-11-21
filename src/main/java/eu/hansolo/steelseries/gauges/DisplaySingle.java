@@ -473,7 +473,11 @@ public final class DisplaySingle extends JComponent implements Lcd, ActionListen
             final double digitalFontOffset = digitalFont ? lcdImage.getWidth() * 0.0625 : 0;
             // Draw unit string
             if (lcdUnitStringVisible && !lcdUnitString.isEmpty()) {
-                unitLayout = new TextLayout(lcdUnitString, G2.getFont(), RENDER_CONTEXT);
+            	String s = "";
+            	for (int i = 0; i < lcdUnitString.length(); i++)
+            		s += "A";
+            	
+                unitLayout = new TextLayout(s, G2.getFont(), RENDER_CONTEXT);
                 UNIT_BOUNDARY.setFrame(unitLayout.getBounds());
                 if (lcdTextVisible) {
                 G2.drawString(lcdUnitString, (int) ((lcdImage.getWidth() - UNIT_BOUNDARY.getWidth()) - lcdImage.getHeight() * 0.15f), (int) (lcdImage.getHeight() * 0.76f));

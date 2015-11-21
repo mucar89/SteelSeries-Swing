@@ -31,18 +31,20 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
+import javax.swing.JFrame;
 
 import eu.hansolo.steelseries.extras.Indicator;
-
-import javax.swing.JFrame;
 
 
 /**
@@ -68,10 +70,17 @@ public enum SymbolImageFactory {
 		JFrame frame = new JFrame();
 		frame.setSize(800, 600);
 		
-		frame.setLayout(new GridLayout(8, 6));
+		frame.setLayout(new GridLayout(6, 1));
 		for (SymbolType st : SymbolType.values()) {
-			Indicator i  = new Indicator();
+			final Indicator i  = new Indicator();
 			i.setSymbolType(st);
+			i.setGlow(true);
+			i.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					i.setOn(!i.isOn());
+				}
+			});
 			frame.add(i);
 		}
 		
@@ -1660,8 +1669,9 @@ public enum SymbolImageFactory {
             }
             clipImageSymbol = SHADOW.createSoftClipImage((java.awt.Shape) SYMBOL, FILL_COLOR);
             final double OFFSET = 0.12 * IMAGE_WIDTH;
+            BufferedImage shadowedImage = Shadow.INSTANCE.createDropShadow(clipImageSymbol, 0, 0.65f, (int) OFFSET, 315, GLOW_COLOR);
             G2.translate(-OFFSET, -OFFSET);
-            G2.drawImage(Shadow.INSTANCE.createDropShadow(clipImageSymbol, 0, 0.65f, (int) OFFSET, 315, GLOW_COLOR), SYMBOL.getBounds().x, SYMBOL.getBounds().y, null);
+            G2.drawImage(shadowedImage, SYMBOL.getBounds().x + 1, SYMBOL.getBounds().y + 1, null);
             G2.translate(OFFSET, OFFSET);
         } else {
             G2.setPaint(FILL_COLOR);

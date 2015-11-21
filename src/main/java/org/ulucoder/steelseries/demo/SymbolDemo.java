@@ -1,6 +1,8 @@
 package org.ulucoder.steelseries.demo;
 
 import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
 
@@ -14,8 +16,16 @@ public class SymbolDemo {
 		
 		frame.setLayout(new GridLayout(4, 6));
 		for (SymbolType st : SymbolType.values()) {
-			Indicator indi = new Indicator();
+			final Indicator indi = new Indicator();
 			indi.setSymbolType(st);
+			indi.setGlow(true);
+			indi.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					indi.setOn(!indi.isOn());
+				}
+			});
+			
 			frame.add(indi);
 		}
 		
