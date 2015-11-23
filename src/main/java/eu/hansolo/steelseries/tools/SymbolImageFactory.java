@@ -42,6 +42,7 @@ import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
+import javax.swing.plaf.basic.BasicComboBoxUI.ComboBoxLayoutManager;
 import javax.swing.JFrame;
 
 import eu.hansolo.steelseries.extras.Indicator;
@@ -62,9 +63,17 @@ public enum SymbolImageFactory {
     private BufferedImage symbolImageBuffer = UTIL.createImage(1, 1, Transparency.TRANSLUCENT);
     private BufferedImage clipImageSymbol = UTIL.createImage(1, 1, Transparency.TRANSLUCENT);
 
-    private static final double SQUARE_SPACE = 0.31;
+    private static final double SQUARE_SPACE = 0.35;
     private static final double SQUARE_LENGTH = 1 - 2 * SQUARE_SPACE;
     private static final double MINUS_THICKNESS = 0.07;
+    private static final double TRIANGLE_A = 0.8;
+    private static final double VOLUME_BAR_MUL = 2;
+    private static final double VOLUME_SPACE_MUL = 1;
+    private static final double VOLUME_FIRST_BAR_MUL = 3 * VOLUME_BAR_MUL;
+    
+    private static final double LINE_THICKNESS = 0.02;
+    private static final double LINE_THICK_DIV_SQRT2 = LINE_THICKNESS / Math.sqrt(2d);
+    private static final double LINE_THICK_TIMES_SQRT2 = LINE_THICKNESS * Math.sqrt(2d);
     
     public static void main(String[] args) {
 		JFrame frame = new JFrame();
@@ -124,6 +133,16 @@ public enum SymbolImageFactory {
         final int IMAGE_HEIGHT = symbolImageBuffer.getHeight();
 
         final GeneralPath SYMBOL;
+        
+    	double volumeMulSum = VOLUME_FIRST_BAR_MUL + 2 * (VOLUME_SPACE_MUL + VOLUME_BAR_MUL);
+    	double volumeWidth = IMAGE_WIDTH * SQUARE_LENGTH;
+    	double volumeFirstBarWidth = IMAGE_WIDTH * SQUARE_LENGTH * (VOLUME_FIRST_BAR_MUL / volumeMulSum);
+    	double volumeSpaceWidth = IMAGE_WIDTH * SQUARE_LENGTH * (VOLUME_SPACE_MUL / volumeMulSum);
+    	double volumeBarWidth = IMAGE_WIDTH * SQUARE_LENGTH * (VOLUME_BAR_MUL / volumeMulSum);
+    	double volumeStartX = (IMAGE_WIDTH - volumeWidth) / 2d;
+    	double volumeStartY = (IMAGE_HEIGHT + volumeWidth) / 2d;
+    	double volumeX = volumeStartX;
+    	double volumeY = volumeStartY;
 
         switch (SYMBOL_TYPE) {
             case FUEL:
@@ -1603,6 +1622,44 @@ public enum SymbolImageFactory {
                 SYMBOL.lineTo((0.5 - MINUS_THICKNESS) * IMAGE_WIDTH, (0.5 + MINUS_THICKNESS) * IMAGE_HEIGHT);
                 SYMBOL.lineTo(SQUARE_SPACE * IMAGE_WIDTH, (0.5 + MINUS_THICKNESS) * IMAGE_HEIGHT);
                 SYMBOL.closePath();
+                break;
+                
+            case VOLUME_UP:
+            	
+            	SYMBOL = new GeneralPath();
+            	SYMBOL.setWindingRule(Path2D.WIND_EVEN_ODD);
+                SYMBOL.moveTo(volumeStartX, volumeStartY);
+                SYMBOL.lineTo(IMAGE_WIDTH - volumeStartX, IMAGE_HEIGHT - volumeStartY);
+                SYMBOL.lineTo(IMAGE_WIDTH - volumeStartX, volumeStartY);
+                SYMBOL.closePath();
+                
+                break;
+                
+            case VOLUME_DOWN:
+            	
+            	SYMBOL = new GeneralPath();
+            	SYMBOL.setWindingRule(Path2D.WIND_EVEN_ODD);
+                SYMBOL.moveTo(volumeStartX, volumeStartY);
+                SYMBOL.lineTo(IMAGE_WIDTH - volumeStartX, IMAGE_HEIGHT - volumeStartY);
+                SYMBOL.lineTo(IMAGE_WIDTH - volumeStartX, volumeStartY);
+                SYMBOL.closePath();
+                
+                SYMBOL.moveTo(volumeStartX + volumeFirstBarWidth, 
+                		volumeStartY - IMAGE_WIDTH * LINE_THICKNESS);
+                SYMBOL.lineTo(volumeStartX + volumeFirstBarWidth, 
+                		volumeStartY - volumeFirstBarWidth + IMAGE_WIDTH * LINE_THICKNESS * (0.5 + Math.sqrt(2d)));
+                
+                SYMBOL.lineTo(IMAGE_WIDTH - volumeStartX - IMAGE_WIDTH * LINE_THICKNESS,
+                		IMAGE_HEIGHT - volumeStartY + IMAGE_HEIGHT * LINE_THICKNESS * (0.5 + Math.sqrt(2d)));
+                //SYMBOL.lineTo(volumeStartX, volumeStartY);
+                /*SYMBOL.lineTo(IMAGE_WIDTH - volumeStartX - IMAGE_WIDTH * LINE_THICKNESS,
+                		volumeStartY - IMAGE_WIDTH * LINE_THICKNESS);*/
+                SYMBOL.lineTo(IMAGE_WIDTH - volumeStartX - IMAGE_WIDTH * LINE_THICKNESS,
+                		volumeStartY - IMAGE_WIDTH * LINE_THICKNESS);
+                SYMBOL.lineTo(volumeStartX + volumeFirstBarWidth,
+                		volumeStartY - IMAGE_WIDTH * LINE_THICKNESS);
+                SYMBOL.closePath();
+                
                 break;
                 
             case HORN:

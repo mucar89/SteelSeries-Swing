@@ -68,6 +68,10 @@ public enum SymbolType {
     PLUG,
     LAMP,
     PLUS,
-    MINUS;
+    MINUS,
+    DOUBLE_EAST,
+    DOUBLE_WEST,
+    VOLUME_DOWN,
+    VOLUME_UP;
     
 }

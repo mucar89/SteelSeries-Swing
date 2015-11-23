@@ -52,6 +52,7 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.imageio.ImageIO;
 
 
@@ -75,11 +76,21 @@ public enum Util {
      * to general ui related things.
      */
     Util() {
-        try {
+    	try {
             digitalFont = Font.createFont(0, this.getClass().getResourceAsStream("/eu/hansolo/steelseries/resources/digital.ttf"));
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(digitalFont);
         } catch (FontFormatException exception) {
+        	exception.printStackTrace();
         } catch (IOException exception) {
+        	try {
+				digitalFont = Font.createFont(0, this.getClass().getClassLoader().getResourceAsStream(
+						"resources/eu/hansolo/steelseries/resources/digital.ttf"));
+				GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(digitalFont);
+			} catch (FontFormatException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         }
     }
 
